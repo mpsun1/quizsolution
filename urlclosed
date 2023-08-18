@@ -1,0 +1,57 @@
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.action_chains import ActionChains
+
+# Initialize the WebDriver
+driver = webdriver.Chrome()
+
+# Step 1: Open GitHub
+driver.get("https://github.com/")
+
+# Step 2: Focus on the search bar
+search_bar = driver.find_element(By.NAME, "q")
+search_bar.click()
+
+# Step 3: Input "react" and submit
+search_bar.send_keys("react")
+search_bar.send_keys(Keys.RETURN)
+
+# Step 4: Click on "Advanced Search"
+advanced_search_link = driver.find_element(By.LINK_TEXT, "Advanced search")
+advanced_search_link.click()
+
+# Step 5: Set search parameters
+language_dropdown = driver.find_element(By.NAME, "l")
+language_dropdown.send_keys("JavaScript")
+state_dropdown = driver.find_element(By.NAME, "state")
+state_dropdown.send_keys("closed")
+stars_input = driver.find_element(By.NAME, "stars")
+stars_input.send_keys(">45")
+followers_input = driver.find_element(By.NAME, "followers")
+followers_input.send_keys(">50")
+license_dropdown = driver.find_element(By.NAME, "license")
+license_dropdown.send_keys("Boost Software License 1.0")
+
+# Step 6: Press search
+search_button = driver.find_element(By.CLASS_NAME, "btn-primary")
+search_button.click()
+
+# Step 7: Verify 1 repository result
+results = driver.find_elements(By.CLASS_NAME, "repo-list-item")
+assert len(results) == 1
+
+# Step 8: Verify "mvoloskov/decider" in results
+assert "mvoloskov/decider" in results[0].text
+
+# Step 9: Navigate to repository page
+repository_link = results[0].find_element(By.PARTIAL_LINK_TEXT, "mvoloskov/decider")
+repository_link.click()
+
+# Step 10: Print first 300 characters of README.md
+readme_element = driver.find_element(By.ID, "readme")
+readme_text = readme_element.text[:300]
+print(readme_text)
+
+# Close the browser
+driver.quit()
